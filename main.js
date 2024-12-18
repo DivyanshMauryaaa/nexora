@@ -3,7 +3,7 @@ import MarkdownIt from 'markdown-it';
 import { maybeShowApiKeyBanner } from './gemini-api-banner';
 import './style.css';
 
-let API_KEY = 'AIzaSyDfVH0lEfr0X045bC_vDifJ-4_68t4zZqM';
+let API_KEY = 'API KEY';
 
 let form = document.querySelector('form');
 let topic = document.querySelector('#topic');
