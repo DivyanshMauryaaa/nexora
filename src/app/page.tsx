@@ -3,10 +3,13 @@
 import { Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { createClient } from '@supabase/supabase-js'
 import { useUser } from "@clerk/nextjs";
+import { createClient } from "@supabase/supabase-js";
 
-export const supabase = createClient("https://ucsiqszgsdqfzufbqjpp.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjc2lxc3pnc2RxZnp1ZmJxanBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNTk0NDcsImV4cCI6MjA1NzkzNTQ0N30.AjuQjAv8ZJsovgLq8Cge7tfLe193vIgVrGfN4MnBtUs")
+export const supabase = createClient(
+    "https://ucsiqszgsdqfzufbqjpp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjc2lxc3pnc2RxZnp1ZmJxanBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNTk0NDcsImV4cCI6MjA1NzkzNTQ0N30.AjuQjAv8ZJsovgLq8Cge7tfLe193vIgVrGfN4MnBtUs"
+);
 
 export default function Home() {
   const { user } = useUser(); //Getting logged-in user from clerk
@@ -74,6 +77,7 @@ export default function Home() {
       alert("Test saved successfully!");
 
       setResponse("")
+      setPrompt("")
     }
   };
 
@@ -88,7 +92,7 @@ export default function Home() {
       <center>
         <input
           type="text"
-          className="p-[30px] rounded-2xl w-[600px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-[30px] rounded-2xl md:w-[600px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Describe the Test You Want to Make here..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}

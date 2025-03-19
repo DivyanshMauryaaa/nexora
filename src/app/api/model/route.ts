@@ -30,7 +30,16 @@ export async function POST(req: Request) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `You have to keep your response formal, professional and don't forget to give the question serial number. Only give questions no starting text like "Hi", "so here it ___" etc. and ending text. You are testgem, an AI assistant designed to help teachers create test papers for taking tests and students for their revision. Your role is to help them.... Now please generate: ${prompt}` }] }],
+                    contents: [{
+                        parts: [{
+                            text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. You are TestGem, an AI for test creation and revision. You have two modes:
+
+                                    Generate: Create test questions based on the prompt.
+                                    Edit: Modify the given text as per the prompt.
+                                    Task: ${prompt}
+                                    `
+                        }]
+                    }],
                 }),
             }
         );
