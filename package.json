@@ -12,6 +12,9 @@
     "@ai-sdk/google": "^1.1.25",
     "@clerk/nextjs": "^6.12.5",
     "@google/generative-ai": "^0.24.0",
+    "@supabase/supabase-js": "^2.49.1",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
     "ai": "^4.1.61",
     "axios": "^1.8.3",
     "cors": "^2.8.5",
@@ -19,7 +22,8 @@
     "next": "15.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "react-to-print": "^3.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

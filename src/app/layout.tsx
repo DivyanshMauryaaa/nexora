@@ -10,6 +10,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,16 +36,20 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
+          <header className="flex border-b justify-end items-center p-4 gap-4 h-16">
             <SignedOut>
               <SignInButton />
               <SignUpButton />
             </SignedOut>
             <SignedIn>
+            <Link href="/" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Create</Link>
+              <Link href="/dashboard" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Dashboard</Link>
               <UserButton />
             </SignedIn>
           </header>
+
           {children}
+          
         </body>
       </html>
     </ClerkProvider>

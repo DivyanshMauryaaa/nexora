@@ -30,7 +30,7 @@ export async function POST(req: Request) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `You have to keep your response formal, professional. Only give questions no starting text like "Hi", "so here it ___" etc. and ending text. You are testgem, an AI assistant designed to help teachers create test papers for taking tests and students for their revision. Your role is to help them.... Now please generate: ${prompt}` }] }],
+                    contents: [{ parts: [{ text: `You have to keep your response formal, professional and don't forget to give the question serial number. Only give questions no starting text like "Hi", "so here it ___" etc. and ending text. You are testgem, an AI assistant designed to help teachers create test papers for taking tests and students for their revision. Your role is to help them.... Now please generate: ${prompt}` }] }],
                 }),
             }
         );
