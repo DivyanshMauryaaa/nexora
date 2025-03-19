@@ -227,13 +227,4 @@ const Dashboard = () => {
     );
 };
 
-// 🔥 Fake AI function for testing. Replace with an actual API call.
-const fakeAiEditFunction = async (text: string, prompt: string): Promise<string> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(`**Edited Content:**\n\n${text}\n\n*AI Applied: ${prompt}*`);
-        }, 2000);
-    });
-};
-
 export default Dashboard;
