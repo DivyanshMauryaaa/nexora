@@ -32,10 +32,8 @@ export async function POST(req: Request) {
                 body: JSON.stringify({
                     contents: [{
                         parts: [{
-                            text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. You are TestGem, an AI for test creation and revision. You have two modes:
-
+                            text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. You are TestGem, an AI for test creation and revision.
                                     Generate: Create test questions based on the prompt.
-                                    Edit: Modify the given text as per the prompt.
                                     Task: ${prompt}
                                     `
                         }]

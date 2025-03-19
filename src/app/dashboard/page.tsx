@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 import Markdown from "react-markdown";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Trash } from "lucide-react";
 
 const supabase = createClient(
     "https://ucsiqszgsdqfzufbqjpp.supabase.co",
@@ -65,30 +65,31 @@ const Dashboard = () => {
 
     const handleEditSubmit = async () => {
         setIsProcessing(true);
-    
+
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${"AIzaSyCblOxBBk0sWJVjGY22SHKYTC1Xu2MYIZQ"}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [
-                        { role: "user", parts: [{ text: `Edit this text based on the prompt:\n\nOriginal Text: "${selectedTest?.content}"\n\nUser Prompt: "${userInput}"` }] }
+                        { role: "user", parts: [{ text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. 
+                            Edit this text based on the prompt:\n\nOriginal Text: "${selectedTest?.content}"\n\nUser Prompt: "${userInput}"` }] }
                     ]
                 }),
             });
-    
+
             const data = await response.json();
             if (response.ok && data.candidates?.length > 0) {
                 setAiResponse(data.candidates[0].content.parts[0].text);
-            } else {
+            } else { 
                 console.error("API Error:", data);
             }
         } catch (error) {
             console.error("Request Failed:", error);
         }
-    
+
         setIsProcessing(false);
-    };    
+    };
 
     const keepChanges = async () => {
         if (!selectedTest || !aiResponse) return;
@@ -106,6 +107,29 @@ const Dashboard = () => {
         closeDialog();
     };
 
+    const handleDeleteTest = async (testId?: string) => {
+        if (!testId) {
+            console.error("Delete Error: testId is undefined");
+            return;
+        }
+    
+        try {
+            const { error } = await supabase
+                .from("test_documents")
+                .delete()
+                .eq("id", testId);
+    
+            if (error) {
+                console.error("Delete Error:", error);
+            } else {
+                setTests((prevTests) => prevTests.filter((test) => test.id !== testId));
+            }
+        } catch (error) {
+            console.error("Request Failed:", error);
+        }
+    };
+    
+
     return (
         <div className="p-3">
             <p className="text-4xl text-center">Dashboard</p>
@@ -121,17 +145,26 @@ const Dashboard = () => {
                             <div
                                 key={test.id}
                                 className={`p-2 border hover:bg-gray-100 cursor-pointer transition-all duration-200 rounded-lg border-gray-200
-                                    ${isOpen ? 'w-full h-auto' : 'w-[300px] h-[200px]'} overflow-hidden`}
+                                    ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
                                 onClick={() => toggleTest(test.id)}
                             >
                                 <div className="flex justify-between items-center">
                                     <p className="font-semibold text-xl">{test.title}</p>
-                                    <p
-                                        className="flex hover:text-indigo-600 cursor-pointer"
-                                        onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
-                                    >
-                                        <Sparkles size={16} />&nbsp;Edit with AI
-                                    </p>
+
+                                    <div className="flex gap-3">
+                                        <p
+                                            className="hover:text-indigo-600 cursor-pointer"
+                                            onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
+                                        >
+                                            <Sparkles size={20} />
+                                        </p>
+                                        <p
+                                            className="hover:text-red-600 cursor-pointer"
+                                            onClick={() => handleDeleteTest(test.id)}
+                                        >
+                                            <Trash size={20} />
+                                        </p>
+                                    </div>
                                 </div>
 
                                 <br />
@@ -156,7 +189,6 @@ const Dashboard = () => {
                             <>
                                 <p className="text-sm text-gray-500">AI Suggested Changes:</p>
 
-                                {/* 🔥 SCROLLABLE CONTAINER FOR AI RESPONSE */}
                                 <div className="border p-3 rounded-md bg-gray-100 mt-2 max-h-60 overflow-y-auto">
                                     <Markdown>{aiResponse}</Markdown>
                                 </div>
