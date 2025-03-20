@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";

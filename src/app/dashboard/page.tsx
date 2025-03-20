@@ -11,9 +11,16 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_PROJECT_APIKEY || ''
 );
 
+interface Test {
+    id: string;
+    title: string;
+    content: string;
+    user_id: string;
+}
+
 const Dashboard = () => {
     const { user } = useUser();
-    const [tests, setTests] = useState<any[]>([]);
+    const [tests, setTests] = useState<Test[]>([]);
     const [openTests, setOpenTests] = useState<Set<string>>(new Set());
     const [isLoading, setLoading] = useState(false);
     const [isDialogOpen, setDialogOpen] = useState(false);
@@ -21,10 +28,6 @@ const Dashboard = () => {
     const [userInput, setUserInput] = useState("");
     const [aiResponse, setAiResponse] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
-
-    useEffect(() => {
-        if (user) fetchTests();
-    }, [user]);
 
     const fetchTests = async () => {
         setLoading(true);
@@ -40,6 +43,10 @@ const Dashboard = () => {
 
         setLoading(false);
     };
+
+    useEffect(() => {
+        if (user) fetchTests();
+    }, [user, fetchTests]);
 
     const toggleTest = (id: string) => {
         setOpenTests((prev) => {
@@ -72,8 +79,12 @@ const Dashboard = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [
-                        { role: "user", parts: [{ text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. 
-                            Edit this text based on the prompt:\n\nOriginal Text: "${selectedTest?.content}"\n\nUser Prompt: "${userInput}"` }] }
+                        {
+                            role: "user", parts: [{
+                                text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. 
+                            Edit this text based on the prompt:\n\nOriginal Text: "${selectedTest?.content}"\n\nUser Prompt: "${userInput}"`
+                            }]
+                        }
                     ]
                 }),
             });
@@ -81,7 +92,7 @@ const Dashboard = () => {
             const data = await response.json();
             if (response.ok && data.candidates?.length > 0) {
                 setAiResponse(data.candidates[0].content.parts[0].text);
-            } else { 
+            } else {
                 console.error("API Error:", data);
             }
         } catch (error) {
@@ -112,13 +123,13 @@ const Dashboard = () => {
             console.error("Delete Error: testId is undefined");
             return;
         }
-    
+
         try {
             const { error } = await supabase
                 .from("test_documents")
                 .delete()
                 .eq("id", testId);
-    
+
             if (error) {
                 console.error("Delete Error:", error);
             } else {
@@ -128,7 +139,7 @@ const Dashboard = () => {
             console.error("Request Failed:", error);
         }
     };
-    
+
 
     return (
         <div className="p-3">
