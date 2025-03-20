@@ -46,7 +46,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (user) fetchTests();
-    }, [user, fetchTests]);
+    }, [user]);
 
     const toggleTest = (id: string) => {
         setOpenTests((prev) => {
