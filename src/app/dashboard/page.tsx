@@ -7,8 +7,8 @@ import Markdown from "react-markdown";
 import { Sparkles, Trash } from "lucide-react";
 
 const supabase = createClient(
-    "https://ucsiqszgsdqfzufbqjpp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjc2lxc3pnc2RxZnp1ZmJxanBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNTk0NDcsImV4cCI6MjA1NzkzNTQ0N30.AjuQjAv8ZJsovgLq8Cge7tfLe193vIgVrGfN4MnBtUs"
+    process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL || '',
+    process.env.NEXT_PUBLIC_SUPABASE_PROJECT_APIKEY || ''
 );
 
 const Dashboard = () => {

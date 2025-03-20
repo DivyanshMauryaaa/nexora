@@ -7,8 +7,8 @@ import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(
-    "https://ucsiqszgsdqfzufbqjpp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjc2lxc3pnc2RxZnp1ZmJxanBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIzNTk0NDcsImV4cCI6MjA1NzkzNTQ0N30.AjuQjAv8ZJsovgLq8Cge7tfLe193vIgVrGfN4MnBtUs"
+  process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_PROJECT_APIKEY || ''
 );
 
 export default function Home() {
@@ -22,9 +22,6 @@ export default function Home() {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  // Ref for printing
-  const responseRef = useRef(null);
 
   // Handiling when user clicks the "Generate" button to fetch the response 
   const handleSubmit = async () => {
@@ -52,6 +49,8 @@ export default function Home() {
 
   //TODO: Implement the save functionality to save the response to the database
   const handleSaveDocument = async (title: string, content: string) => {
+    setSaving(true)
+
     if (!user) {
       console.error("No logged-in user.");
       return;
@@ -73,12 +72,13 @@ export default function Home() {
     if (error) {
       console.error("Insert Error:", error.message);
     } else {
-      console.log("Test saved successfully!");
       alert("Test saved successfully!");
 
       setResponse("")
       setPrompt("")
     }
+
+    setSaving(false)
   };
 
   return (
@@ -90,21 +90,23 @@ export default function Home() {
       <br />
 
       <center>
-        <input
-          type="text"
-          className="p-[30px] rounded-2xl md:w-[600px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Describe the Test You Want to Make here..."
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-        />
+        <form action="">
+          <input
+            type="text"
+            className="p-[30px] rounded-2xl md:w-[600px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Describe the Test You Want to Make here..."
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
 
-        <button
-          onClick={handleSubmit} // Handle the click event
-          disabled={loading == true} // Disable button when loading
-          className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r from-indigo-500 to-blue-500 py-3 px-7 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
-        >
-          <Sparkles /> {loading ? "Generating..." : "Generate"}
-        </button>
+          <button
+            onClick={handleSubmit} // Handle the click event
+            disabled={loading == true} // Disable button when loading
+            className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r from-indigo-500 to-blue-500 py-3 px-7 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
+          >
+            <Sparkles /> {loading ? "Generating..." : "Generate"}
+          </button>
+        </form>
       </center>
 
 
@@ -133,7 +135,7 @@ export default function Home() {
               {saving ? "Saving..." : "Save"}
             </button>
 
-            <button className="cursor-pointer py-3 px-7 hover:underline">Cancel</button>
+            <button className="cursor-pointer py-3 px-7 hover:underline" disabled={saving}>Cancel</button>
           </div>
         </div>
       )}
