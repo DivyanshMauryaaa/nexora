@@ -11,7 +11,6 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 import Link from "next/link";
-import { Github } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
