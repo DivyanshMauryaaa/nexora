@@ -11,6 +11,7 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 import Link from "next/link";
+import { Github } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,15 +43,15 @@ export default function RootLayout({
               <SignUpButton />
             </SignedOut>
             <SignedIn>
-              <Link href="/" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Create</Link>
-              <Link href="/dashboard" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Dashboard</Link>
-              {/* <Link href="/interactiveTest" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Interactive Tests</Link>  - Currently in development*/}
-              <UserButton />
+                <Link href="/" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Create</Link>
+                <Link href="/dashboard" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Dashboard</Link>
+                {/* <Link href="/interactiveTest" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Interactive Tests</Link>  - Currently in development*/}
+                <UserButton />
             </SignedIn>
           </header>
 
           {children}
-          
+
         </body>
       </html>
     </ClerkProvider>

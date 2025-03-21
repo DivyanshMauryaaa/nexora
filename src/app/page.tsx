@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Github, Info, Sparkles } from "lucide-react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useUser } from "@clerk/nextjs";
@@ -139,6 +139,17 @@ export default function Home() {
           </div>
         </div>
       )}
+
+
+      <div className="mt-[30%] flex">
+        <a href="https://github.com/divyanshMauryaaa" target="_blank">
+          <Github className="hover:text-indigo-700" size={30} />
+        </a>
+
+        <p className="flex text-sm text-gray-500">
+          &nbsp;<Info size={16}/> This project is private
+        </p>
+      </div>
     </div>
   );
 }
