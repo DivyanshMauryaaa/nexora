@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 import Markdown from "react-markdown";
-import { Sparkles, Trash } from "lucide-react";
+import { Sparkles, Trash, Expand, Shrink } from "lucide-react";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL || '',
@@ -28,6 +28,7 @@ const Dashboard = () => {
     const [userInput, setUserInput] = useState("");
     const [aiResponse, setAiResponse] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [updatedTitle, setUpdatedTitle] = useState<string>("");
 
     const fetchTests = async () => {
         setLoading(true);
@@ -59,10 +60,11 @@ const Dashboard = () => {
 
     const openEditDialog = (test: any) => {
         setSelectedTest(test);
+        setUpdatedTitle(test.title); // Ensure updatedTitle is set properly
         setUserInput("");
         setAiResponse(null);
         setDialogOpen(true);
-    };
+    };    
 
     const closeDialog = () => {
         setDialogOpen(false);
@@ -118,7 +120,25 @@ const Dashboard = () => {
         closeDialog();
     };
 
-    const handleDeleteTest = async (testId?: string) => {
+    const HandleeditTitle = async (testId: string, newTitle: string) => {
+        if (!testId || !newTitle.trim()) return;
+    
+        // Update UI instantly for better UX
+        setTests((prevTests) =>
+            prevTests.map((test) =>
+                test.id === testId ? { ...test, title: newTitle } : test
+            )
+        );
+    
+        // Update Supabase
+        await supabase
+            .from("test_documents")
+            .update({ title: newTitle })
+            .eq("id", testId);
+    };
+    
+
+    const handleDeleteTest = async (testId?: string, updatedTitle?: string) => {
         if (!testId) {
             console.error("Delete Error: testId is undefined");
             return;
@@ -155,12 +175,25 @@ const Dashboard = () => {
                         return (
                             <div
                                 key={test.id}
-                                className={`p-2 border hover:bg-gray-100 cursor-pointer transition-all duration-200 rounded-lg border-gray-200
+                                className={`p-2 border transition-all duration-200 rounded-lg border-gray-200
                                     ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                                onClick={() => toggleTest(test.id)}
                             >
                                 <div className="flex justify-between items-center">
-                                    <p className="font-semibold text-xl">{test.title}</p>
+                                    <p
+                                        className="font-semibold text-xl outline-none cursor-text"
+                                        contentEditable
+                                        suppressContentEditableWarning
+                                        onBlur={(e) => HandleeditTitle(test.id, e.target.innerText)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                e.currentTarget.blur(); // Save title on Enter
+                                            }
+                                        }}
+                                    >
+                                        {test.title}
+                                    </p>
+
 
                                     <div className="flex gap-3">
                                         <p
@@ -174,6 +207,12 @@ const Dashboard = () => {
                                             onClick={() => handleDeleteTest(test.id)}
                                         >
                                             <Trash size={20} />
+                                        </p>
+                                        <p
+                                            className="cursor-pointer"
+                                            onClick={() => toggleTest(test.id)}
+                                        >
+                                            {isOpen ? <Shrink size={20} /> : <Expand size={20} />}
                                         </p>
                                     </div>
                                 </div>
@@ -192,7 +231,7 @@ const Dashboard = () => {
 
             {isDialogOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-5 rounded-lg shadow-lg w-[400px] max-h-[90vh] overflow-y-auto">
+                    <div className={`bg-white p-5 rounded-lg shadow-lg ${aiResponse ? "w-[90%] h-[90%]" : "w-[400px] max-h-[90vh]"} overflow-y-auto`}>
                         <h2 className="text-xl font-semibold mb-4">Edit Test with AI</h2>
                         <p className="text-gray-600">{selectedTest?.title}</p>
 
@@ -200,7 +239,7 @@ const Dashboard = () => {
                             <>
                                 <p className="text-sm text-gray-500">AI Suggested Changes:</p>
 
-                                <div className="border p-3 rounded-md bg-gray-100 mt-2 max-h-60 overflow-y-auto">
+                                <div className={`border p-3 rounded-md bg-gray-100 mt-2 ${aiResponse ? "max-h-[90%]" : "max-h-60"} overflow-y-auto`}>
                                     <Markdown>{aiResponse}</Markdown>
                                 </div>
 
