@@ -146,7 +146,7 @@ export default function Home() {
         </a>
 
         <p className="flex text-sm text-gray-500">
-          &nbsp;<Info size={16}/> This project is private
+          &nbsp;<Info size={16}/> This project is open-source, click on the icon to learn more
         </p>
       </div>
     </div>
