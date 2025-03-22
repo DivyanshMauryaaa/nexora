@@ -140,7 +140,6 @@ export default function Home() {
         </div>
       )}
 
-
       <div className="mt-[30%] flex">
         <a href="https://github.com/divyanshMauryaaa" target="_blank">
           <Github className="hover:text-indigo-700" size={30} />

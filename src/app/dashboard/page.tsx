@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 import Markdown from "react-markdown";
-import { Sparkles, Trash, Expand, Shrink } from "lucide-react";
+import { Sparkles, Trash, Expand, Shrink, Download } from "lucide-react";
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import TurndownService from "turndown";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL || '',
@@ -60,11 +63,11 @@ const Dashboard = () => {
 
     const openEditDialog = (test: any) => {
         setSelectedTest(test);
-        setUpdatedTitle(test.title); // Ensure updatedTitle is set properly
-        setUserInput("");
-        setAiResponse(null);
+        setUpdatedTitle(test.title);
+        setUserInput("");  // Ensure AI input is cleared
+        setAiResponse(null);  // Prevent AI from triggering
         setDialogOpen(true);
-    };    
+    };
 
     const closeDialog = () => {
         setDialogOpen(false);
@@ -122,21 +125,22 @@ const Dashboard = () => {
 
     const HandleeditTitle = async (testId: string, newTitle: string) => {
         if (!testId || !newTitle.trim()) return;
-    
+
         // Update UI instantly for better UX
         setTests((prevTests) =>
             prevTests.map((test) =>
                 test.id === testId ? { ...test, title: newTitle } : test
             )
         );
-    
+
         // Update Supabase
         await supabase
             .from("test_documents")
             .update({ title: newTitle })
             .eq("id", testId);
     };
-    
+
+
 
     const handleDeleteTest = async (testId?: string, updatedTitle?: string) => {
         if (!testId) {
@@ -160,7 +164,36 @@ const Dashboard = () => {
         }
     };
 
-
+    const handleMarkdownToDocx = async (markdown: string, fileName = "document.docx") => {
+        try {
+            const turndownService = new TurndownService({ strongDelimiter: "**" });
+    
+            // Use the GFM plugin for better formatting
+            turndownService.addRule("preserveLineBreaks", {
+                filter: ["br"],
+                replacement: () => "\n",
+            });
+    
+            const htmlContent = turndownService.turndown(markdown);
+    
+            // Split content into paragraphs (preserving line breaks)
+            const paragraphs = htmlContent.split("\n").map(line => new Paragraph({
+                children: [new TextRun(line)],
+            }));
+    
+            const doc = new Document({
+                sections: [{ properties: {}, children: paragraphs }],
+            });
+    
+            const blob = await Packer.toBlob(doc);
+            saveAs(blob, fileName);
+    
+            console.log("DOCX file generated successfully!");
+        } catch (error) {
+            console.error("Error converting Markdown to DOCX:", error);
+        }
+    };
+    
     return (
         <div className="p-3">
             <p className="text-4xl text-center">Dashboard</p>
@@ -214,6 +247,11 @@ const Dashboard = () => {
                                         >
                                             {isOpen ? <Shrink size={20} /> : <Expand size={20} />}
                                         </p>
+                                        <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
+                                            <Download size={20} />
+                                        </p>
+
+
                                     </div>
                                 </div>
 
