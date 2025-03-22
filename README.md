@@ -3,7 +3,7 @@
 TestGem is an AI-powered web application that allows users to create customized test papers effortlessly. Leveraging artificial intelligence, it generates relevant questions based on user inputs, streamlining the assessment creation process.&#8203;
 </p>
 
-<code>
+``` .env  
 NEXT_PUBLIC_GEMINI_API_KEY=
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
@@ -15,4 +15,4 @@ NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
 
 NEXT_PUBLIC_SUPABASE_PROJECT_URL=
 NEXT_PUBLIC_SUPABASE_PROJECT_APIKEY=
-</code>
+```
