@@ -7,11 +7,8 @@ TestGem is an AI-powered web application that allows users to create customized 
 <ul>
   <li>Clone the repo 
     <br />
-    
     ```bash
-    
     git clone https://github.com/DivyanshMauryaaa/testgem
-    
     ```
   </li>
   <li>Create .env file and load it with the structure given below. make sure to put "your" values</li>
