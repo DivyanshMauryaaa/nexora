@@ -7,30 +7,16 @@ TestGem is an AI-powered web application that allows users to create customized 
 <ul>
   <li>Clone the repo 
     <br />
-    ```bash
-    git clone https://github.com/DivyanshMauryaaa/testgem
-    ```
+    <code>git clone https://github.com/divyanshMauryaaa/testgem</code>
   </li>
   <li>Create .env file and load it with the structure given below. make sure to put "your" values</li>
-  <li>run 
-    
-    ```bash
-    
-    npm install
-    
-    ``` 
-    
-    to install all the depedencies</li>
-  <li>run 
-    
-    ```
-    
-    npm run dev
-    
-    ``` 
-    
-    in terminal to run and test the app</li>
+  <li>run <code>npm install</code> to install all the depedencies</li>
+  <li>run <code>npm run dev</code> in terminal at the project's root folder to run and test the app</li>
 </ul>
+
+<br />
+
+<h2>ENV Structure: </h2>
 
 ``` .env  
 NEXT_PUBLIC_GEMINI_API_KEY=
