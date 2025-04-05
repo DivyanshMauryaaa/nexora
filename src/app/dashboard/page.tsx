@@ -24,10 +24,12 @@ interface Test {
 const Dashboard = () => {
     const { user } = useUser();
     const [tests, setTests] = useState<Test[]>([]);
+    const [notes, setNotes] = useState<any[]>([]);
     const [openTests, setOpenTests] = useState<Set<string>>(new Set());
     const [isLoading, setLoading] = useState(false);
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [selectedTest, setSelectedTest] = useState<any | null>(null);
+    const [selectedNote, setSelectedNote] = useState<any | null>(null);
     const [userInput, setUserInput] = useState("");
     const [aiResponse, setAiResponse] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -48,9 +50,29 @@ const Dashboard = () => {
         setLoading(false);
     };
 
+    const fetchNotes = async () => {
+        setLoading(true);
+        if (!user) return;
+
+        const { data, error } = await supabase
+            .from("notes")
+            .select("*")
+            .eq("user_id", user.id);
+
+        if (error) console.error("Fetch Error:", error);
+        else setNotes(data || []);
+
+        setLoading(false);
+    }
+
     useEffect(() => {
         if (user) fetchTests();
     }, [user]);
+
+    useEffect(() => {
+        if (user) fetchNotes();
+    }, [user]);
+
 
     const toggleTest = (id: string) => {
         setOpenTests((prev) => {
@@ -107,7 +129,7 @@ const Dashboard = () => {
         setIsProcessing(false);
     };
 
-    const keepChanges = async () => {
+    const keepChanges = async (database?: string) => {
         if (!selectedTest || !aiResponse) return;
 
         const updatedTests = tests.map((test) =>
@@ -116,14 +138,14 @@ const Dashboard = () => {
         setTests(updatedTests);
 
         await supabase
-            .from("test_documents")
+            .from(database || "test_documents")
             .update({ content: aiResponse })
             .eq("id", selectedTest.id);
 
         closeDialog();
     };
 
-    const HandleeditTitle = async (testId: string, newTitle: string) => {
+    const HandleeditTitle = async (testId: string, newTitle: string, database: string) => {
         if (!testId || !newTitle.trim()) return;
 
         // Update UI instantly for better UX
@@ -135,14 +157,12 @@ const Dashboard = () => {
 
         // Update Supabase
         await supabase
-            .from("test_documents")
+            .from(database)
             .update({ title: newTitle })
             .eq("id", testId);
     };
 
-
-
-    const handleDeleteTest = async (testId?: string, updatedTitle?: string) => {
+    const handleDeleteTest = async (testId?: string, updatedTitle?: string, deleteDatabase?: string) => {
         if (!testId) {
             console.error("Delete Error: testId is undefined");
             return;
@@ -150,7 +170,7 @@ const Dashboard = () => {
 
         try {
             const { error } = await supabase
-                .from("test_documents")
+                .from(deleteDatabase ? "test_documents" : "notes")
                 .delete()
                 .eq("id", testId);
 
@@ -167,103 +187,181 @@ const Dashboard = () => {
     const handleMarkdownToDocx = async (markdown: string, fileName = "document.docx") => {
         try {
             const turndownService = new TurndownService({ strongDelimiter: "**" });
-    
+
             // Use the GFM plugin for better formatting
             turndownService.addRule("preserveLineBreaks", {
                 filter: ["br"],
                 replacement: () => "\n",
             });
-    
+
             const htmlContent = turndownService.turndown(markdown);
-    
+
             // Split content into paragraphs (preserving line breaks)
             const paragraphs = htmlContent.split("\n").map(line => new Paragraph({
                 children: [new TextRun(line)],
             }));
-    
+
             const doc = new Document({
                 sections: [{ properties: {}, children: paragraphs }],
             });
-    
+
             const blob = await Packer.toBlob(doc);
             saveAs(blob, fileName);
-    
+
             console.log("DOCX file generated successfully!");
         } catch (error) {
             console.error("Error converting Markdown to DOCX:", error);
         }
     };
-    
+
     return (
         <div className="p-3">
             <p className="text-4xl text-center">Dashboard</p>
             <br />
-            <p className="text-lg font-[600]">Your Tests</p>
+            <p className="font-bold text-4xl">Your Tests</p>
             <br />
 
             {isLoading ? <p>Loading...</p> : (
-                <div className="flex flex-wrap gap-4">
-                    {tests.map((test) => {
-                        const isOpen = openTests.has(test.id);
-                        return (
-                            <div
-                                key={test.id}
-                                className={`p-2 border transition-all duration-200 rounded-lg border-gray-200
+                <div>
+                    <div className="flex flex-wrap gap-4">
+
+                        {tests.map((test) => {
+                            const isOpen = openTests.has(test.id);
+                            return (
+                                <div
+                                    key={test.id}
+                                    className={`p-2 border transition-all duration-200 rounded-lg border-gray-200
                                     ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                            >
-                                <div className="flex justify-between items-center">
-                                    <p
-                                        className="font-semibold text-xl outline-none cursor-text"
-                                        contentEditable
-                                        suppressContentEditableWarning
-                                        onBlur={(e) => HandleeditTitle(test.id, e.target.innerText)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                e.preventDefault();
-                                                e.currentTarget.blur(); // Save title on Enter
-                                            }
-                                        }}
-                                    >
-                                        {test.title}
-                                    </p>
-
-
-                                    <div className="flex gap-3">
+                                >
+                                    <div className="flex justify-between items-center">
                                         <p
-                                            className="hover:text-indigo-600 cursor-pointer"
-                                            onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
+                                            className="font-semibold text-xl outline-none cursor-text"
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onBlur={(e) => HandleeditTitle(test.id, e.target.innerText, "test_documents")}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    e.currentTarget.blur(); // Save title on Enter
+                                                }
+                                            }}
                                         >
-                                            <Sparkles size={20} />
-                                        </p>
-                                        <p
-                                            className="hover:text-red-600 cursor-pointer"
-                                            onClick={() => handleDeleteTest(test.id)}
-                                        >
-                                            <Trash size={20} />
-                                        </p>
-                                        <p
-                                            className="cursor-pointer"
-                                            onClick={() => toggleTest(test.id)}
-                                        >
-                                            {isOpen ? <Shrink size={20} /> : <Expand size={20} />}
-                                        </p>
-                                        <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
-                                            <Download size={20} />
+                                            {test.title}
                                         </p>
 
 
+                                        <div className="flex gap-3">
+                                            <p
+                                                className="hover:text-indigo-600 cursor-pointer"
+                                                onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
+                                            >
+                                                <Sparkles size={20} />
+                                            </p>
+                                            <p
+                                                className="hover:text-red-600 cursor-pointer"
+                                                onClick={() => handleDeleteTest(test.id, "test_documents")}
+                                            >
+                                                <Trash size={20} />
+                                            </p>
+                                            <p
+                                                className="cursor-pointer"
+                                                onClick={() => toggleTest(test.id)}
+                                            >
+                                                {isOpen ? <Shrink size={20} /> : <Expand size={20} />}
+                                            </p>
+                                            <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
+                                                <Download size={20} />
+                                            </p>
+
+
+                                        </div>
                                     </div>
-                                </div>
 
-                                <br />
-                                <hr />
-                                <br />
-                                <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
-                                    <Markdown>{test.content}</Markdown>
-                                </small>
-                            </div>
-                        );
-                    })}
+                                    <br />
+                                    <hr />
+                                    <br />
+                                    <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                        <Markdown>{test.content}</Markdown>
+                                    </small>
+                                </div>
+                            );
+                        })}
+
+
+                    </div>
+
+                    <br /><br />
+
+                    <p className="font-bold text-4xl">Your Notes</p>
+                    <br />
+
+                    <div className="flex flex-wrap gap-4">
+
+
+                        {notes.map((note) => {
+                            const isOpen = openTests.has(note.id);
+                            return (
+                                <div
+                                    key={note.id}
+                                    className={`p-2 border transition-all duration-200 rounded-lg border-gray-200
+                                    ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
+                                >
+                                    <div className="flex justify-between items-center">
+                                        <p
+                                            className="font-semibold text-xl outline-none cursor-text"
+                                            contentEditable
+                                            suppressContentEditableWarning
+                                            onBlur={(e) => HandleeditTitle(note.id, e.target.innerText, "notes")}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    e.currentTarget.blur(); // Save title on Enter
+                                                }
+                                            }}
+                                        >
+                                            {note.title}
+                                        </p>
+
+
+                                        <div className="flex gap-3">
+                                            <p
+                                                className="hover:text-indigo-600 cursor-pointer"
+                                                onClick={(e) => { e.stopPropagation(); openEditDialog(note); }}
+                                            >
+                                                <Sparkles size={20} />
+                                            </p>
+                                            <p
+                                                className="hover:text-red-600 cursor-pointer"
+                                                onClick={() => handleDeleteTest(note.id, "notes")}
+                                            >
+                                                <Trash size={20} />
+                                            </p>
+                                            <p
+                                                className="cursor-pointer"
+                                                onClick={() => toggleTest(note.id)}
+                                            >
+                                                {isOpen ? <Shrink size={20} /> : <Expand size={20} />}
+                                            </p>
+                                            <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(note.content, `${note.title}.docx`)}>
+                                                <Download size={20} />
+                                            </p>
+
+
+                                        </div>
+                                    </div>
+
+                                    <br />
+                                    <hr />
+                                    <br />
+                                    <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                        <Markdown>{note.content}</Markdown>
+                                    </small>
+                                </div>
+                            );
+                        })}
+
+
+                    </div>
                 </div>
             )}
 
@@ -283,7 +381,7 @@ const Dashboard = () => {
 
                                 <div className="flex justify-end gap-3 mt-4">
                                     <button className="px-4 py-2 bg-gray-300 rounded" onClick={closeDialog}>Deny Changes</button>
-                                    <button className="px-4 py-2 bg-indigo-600 text-white rounded" onClick={keepChanges}>Keep Changes</button>
+                                    <button className="px-4 py-2 bg-indigo-600 text-white rounded" onClick={() => keepChanges()}>Keep Changes</button>
                                 </div>
                             </>
                         ) : (

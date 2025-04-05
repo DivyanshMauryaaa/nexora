@@ -17,6 +17,7 @@ export default function Home() {
   // Input value to take the input prompt from the user
   const [prompt, setPrompt] = useState("");
   const [saveTitle, setSaveTitle] = useState("");
+  const [saveMode, setSaveMode] = useState("test_documents"); // Save mode to save the document in the database
 
   // Response and loading variables to store the response and loading state
   const [response, setResponse] = useState("");
@@ -48,20 +49,25 @@ export default function Home() {
   };
 
   //TODO: Implement the save functionality to save the response to the database
-  const handleSaveDocument = async (title: string, content: string) => {
+  const handleSaveDocument = async (title: string, content: string, savingAs: string) => {
     setSaving(true)
 
     if (!user) {
       console.error("No logged-in user.");
+      setSaving(false)
+
+      alert("Please login to save your test.");
       return;
     }
 
     if (saveTitle == "") {
       alert("Please enter a title");
+      setSaving(false)
+
       return;
     }
 
-    const { error } = await supabase.from("test_documents").insert([
+    const { error } = await supabase.from(savingAs).insert([
       {
         title: title,
         content: content,
@@ -83,8 +89,8 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <p className="text-[50px] bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text font-[800] text-transparent text-center">
-        TestGem AI
+      <p className="text-[50px] font-[800] text-center text-gray-700">
+        Welcome back! <span className="bg-gradient-to-r text-transparent from-indigo-700 to-purple-700 bg-clip-text">{user?.firstName}</span>
       </p>
 
       <br />
@@ -93,7 +99,7 @@ export default function Home() {
         <form action="">
           <input
             type="text"
-            className="p-[30px] rounded-2xl md:w-[600px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-[27px] rounded-2xl md:w-[800px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-[3.6px] focus:ring-blue-800"
             placeholder="Describe the Test You Want to Make here..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -102,7 +108,7 @@ export default function Home() {
           <button
             onClick={handleSubmit} // Handle the click event
             disabled={loading == true} // Disable button when loading
-            className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r from-indigo-500 to-blue-500 py-3 px-7 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
+            className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r from-indigo-800 to-blue-800 py-3 px-7 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
           >
             <Sparkles /> {loading ? "Generating..." : "Generate"}
           </button>
@@ -127,21 +133,25 @@ export default function Home() {
           </div>
 
           <div className="actions flex justify-center mt-[20px]">
+            Save as: <select className="ml-2 mr-4" defaultValue={"test_documents"} onChange={(e) => setSaveMode(e.target.value)}>
+              <option value="test_documents">Tests</option>
+              <option value="notes">Notes</option>
+            </select>
             <button
-              onClick={() => handleSaveDocument(saveTitle, response)}
+              onClick={() => handleSaveDocument(saveTitle, response, saveMode)}
               disabled={saving}
-              className="py-3 px-7 border bg-blue-600 hover:bg-blue-700 text-white rounded-2xl cursor-pointer"
+              className="py-3 px-7 border bg-blue-600 hover:bg-blue-700 text-white rounded-2xl cursor-pointer transition-all duration-300"
             >
               {saving ? "Saving..." : "Save"}
             </button>
 
-            <button className="cursor-pointer py-3 px-7 hover:underline" disabled={saving}>Cancel</button>
+            <button className="cursor-pointer py-3 px-7 hover:underline" disabled={saving} onClick={() => setResponse('')}>Cancel</button>
           </div>
         </div>
       )}
 
       <div className="mt-[30%] flex">
-        <a href="https://github.com/divyanshMauryaaa" target="_blank">
+        <a href="https://github.com/divyanshMauryaaa/testgem" target="_blank">
           <Github className="hover:text-indigo-700" size={30} />
         </a>
 
