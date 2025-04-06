@@ -201,7 +201,7 @@ const Dashboard = () => {
             console.error("Request Failed:", error);
         }
     };
-    
+
 
     const handleMarkdownToDocx = async (markdown: string, fileName = "document.docx") => {
         try {
@@ -245,7 +245,8 @@ const Dashboard = () => {
                     <div className="flex flex-wrap gap-4">
 
                         {tests.length === 0 ? (
-                            <p className="text-gray-500">No tests available.</p>)
+                            <center><p className="text-gray-500">No tests available.</p></center>
+                        )
                             : (
                                 tests.map((test) => {
                                     const isOpen = openTests.has(test.id);
@@ -317,63 +318,67 @@ const Dashboard = () => {
                     <div className="flex flex-wrap gap-4">
 
 
-                        {notes.map((note) => {
-                            const isOpen = openTests.has(note.id);
-                            return (
-                                <div
-                                    key={note.id}
-                                    className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
-                                    ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <p
-                                            className="font-semibold text-xl outline-none cursor-text"
-                                            contentEditable
-                                            suppressContentEditableWarning
-                                            onBlur={(e) => HandleeditTitle(note.id, e.target.innerText, "notes")}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") {
-                                                    e.preventDefault();
-                                                    e.currentTarget.blur(); // Save title on Enter
-                                                }
-                                            }}
+                        {notes.length === 0 ? (
+                            <center><p className="text-gray-500">No notes available.</p></center>)
+                            : (
+                                notes.map((note) => {
+                                    const isOpen = openTests.has(note.id);
+                                    return (
+                                        <div
+                                            key={note.id}
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
+                                        ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
                                         >
-                                            {note.title}
-                                        </p>
+                                            <div className="flex justify-between items-center">
+                                                <p
+                                                    className="font-semibold text-xl outline-none cursor-text"
+                                                    contentEditable
+                                                    suppressContentEditableWarning
+                                                    onBlur={(e) => HandleeditTitle(note.id, e.target.innerText, "notes")}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            e.currentTarget.blur(); // Save title on Enter
+                                                        }
+                                                    }}
+                                                >
+                                                    {note.title}
+                                                </p>
 
 
-                                        <div className="flex gap-3">
-                                            <p
-                                                className="hover:text-indigo-800 cursor-pointer"
-                                                onClick={(e) => { e.stopPropagation(); openNoteEditDialog(note); }}
-                                            >
-                                                <Sparkles size={20} />
-                                            </p>
-                                            <p
-                                                className="hover:text-red-700 cursor-pointer"
-                                                onClick={() => handleDeleteTest(note.id, "notes")}
-                                            >
-                                                <Trash size={20} />
-                                            </p>
-                                            {/* <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(note.content, `${note.title}.docx`)}>
-                                                <Download size={20} />
-                                            </p> */}
+                                                <div className="flex gap-3">
+                                                    <p
+                                                        className="hover:text-indigo-800 cursor-pointer"
+                                                        onClick={(e) => { e.stopPropagation(); openNoteEditDialog(note); }}
+                                                    >
+                                                        <Sparkles size={20} />
+                                                    </p>
+                                                    <p
+                                                        className="hover:text-red-700 cursor-pointer"
+                                                        onClick={() => handleDeleteTest(note.id, "notes")}
+                                                    >
+                                                        <Trash size={20} />
+                                                    </p>
+                                                    {/* <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(note.content, `${note.title}.docx`)}>
+                                                    <Download size={20} />
+                                                </p> */}
 
 
+                                                </div>
+                                            </div>
+
+                                            <br />
+                                            <hr />
+                                            <br />
+                                            <div onClick={() => openDocumentDialog(note.title, note.content)}>
+                                                <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                                    <Markdown>{note.content}</Markdown>
+                                                </small>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <br />
-                                    <hr />
-                                    <br />
-                                    <div onClick={() => openDocumentDialog(note.title, note.content)}>
-                                        <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
-                                            <Markdown>{note.content}</Markdown>
-                                        </small>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                    );
+                                })
+                            )}
 
 
                     </div>
