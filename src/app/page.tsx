@@ -24,6 +24,21 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  //Message dialog & dialog state to show the message to the user
+  const [messageDialog, setMessageDialog] = useState(false); // Message dialog to show the message to the user
+  const [message, setMessage] = useState(""); // Message to show to the user
+  const [dialogTitle, setDialogTitle] = useState(""); // Title of the message dialog
+
+  const handleOpenMessageDialog = (message: string, dialogTitle: string) => {
+    setMessageDialog(true); // Open the message dialog
+    setMessage(message); // Set the message to show to the user
+    setDialogTitle(dialogTitle); // Set the title of the message dialog
+  }
+
+  const handleCloseMessageDialog = () => {
+    setMessageDialog(false); // Close the message dialog
+  }
+
   // Handiling when user clicks the "Generate" button to fetch the response 
   const handleSubmit = async () => {
     setLoading(true); //Set Loading is equal to true so that it displays "Generating..." insted of "Generate" and notify the user that the response is being generated
@@ -52,16 +67,15 @@ export default function Home() {
   const handleSaveDocument = async (title: string, content: string, savingAs: string) => {
     setSaving(true)
 
-    if (!user) {
-      console.error("No logged-in user.");
+    if (!user) { // Check if user is logged in
       setSaving(false)
-
-      alert("Please login to save your test.");
+      handleOpenMessageDialog("Please Login to save your documents.", "Login Required");
+      
       return;
     }
 
     if (saveTitle == "") {
-      alert("Please enter a title");
+      handleOpenMessageDialog("Please enter a title for your document.", "Title Required");
       setSaving(false)
 
       return;
@@ -76,10 +90,10 @@ export default function Home() {
     ]);
 
     if (error) {
-      console.error("Insert Error:", error.message);
+      console.error("Error saving document:", error); // Log the error if any
+      handleOpenMessageDialog("Error saving document. Please try again. for support: divyanshm510@gmail.com", "Save Error"); // Show error message to the user
     } else {
-      alert("Test saved successfully!");
-
+      handleOpenMessageDialog("Document saved successfully!", "Success"); // Show success message to the user
       setResponse("")
       setPrompt("")
     }
@@ -100,7 +114,7 @@ export default function Home() {
           <input
             type="text"
             className="p-[27px] rounded-2xl md:w-[800px] text-xl border transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-[3.6px] focus:ring-blue-800"
-            placeholder="Describe the Test You Want to Make here..."
+            placeholder="Describe a Test or Notes of a Chapter That You Want to make"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
           />
@@ -108,7 +122,7 @@ export default function Home() {
           <button
             onClick={handleSubmit} // Handle the click event
             disabled={loading == true} // Disable button when loading
-            className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r from-indigo-800 to-blue-800 py-3 px-7 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
+            className="flex items-center gap-2 text-2xl hover:text-white focus:text-white focus:bg-gradient-to-r focus:outline-none hover:bg-gradient-to-r focus:bg-gradient-to-r hover:from-indigo-800 focus:from-indigo-800 hover:to-blue-800 focus:to-blue-800 py-3 px-7 hover:scale-110 focus:scale-110 cursor-pointer mt-4 border transition-all duration-300 rounded-full"
           >
             <Sparkles /> {loading ? "Generating..." : "Generate"}
           </button>
@@ -117,23 +131,26 @@ export default function Home() {
 
 
       {response && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-xl w-[80%] m-auto">
-          <div className="p-3">
+        <div className="mt-4 p-4 border border-gray-200 rounded-xl w-[80%] m-auto">
+
+          <div className="prose text-lg leading-relaxed">
+            <ReactMarkdown>{response}</ReactMarkdown> {/* Parsing the response to display support of text formatting */}
+          </div>
+          <br />
+
+          <div className="p-3 border-t border-gray-200 mt-4">
+            <br />
             <input
               type="text"
               value={saveTitle}
               onChange={(e) => setSaveTitle(e.target.value)}
               placeholder="Title"
-              className="p-2 border rounded"
+              className="border rounded w-full mb-2 focus:outline-none p-4 bg-gray-100 border-none"
             />
           </div>
 
-          <div className="prose text-lg leading-relaxed">
-            <ReactMarkdown>{response}</ReactMarkdown> {/* Parsing the response to display support of text formatting */}
-          </div>
-
           <div className="actions flex justify-center mt-[20px]">
-            Save as: <select className="ml-2 mr-4" defaultValue={"test_documents"} onChange={(e) => setSaveMode(e.target.value)}>
+            <select className="ml-2 mr-4 border border-gray-100 bg-gray-100 p-3 rounded-lg" defaultValue={"test_documents"} onChange={(e) => setSaveMode(e.target.value)}>
               <option value="test_documents">Tests</option>
               <option value="notes">Notes</option>
             </select>
@@ -150,13 +167,26 @@ export default function Home() {
         </div>
       )}
 
-      <div className="mt-[30%] flex">
+      {/* Message Dialog to show the message to the user */}
+      {messageDialog && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg w-[300px]">
+            <h2 className="text-lg font-semibold mb-4">{dialogTitle}</h2>
+            <p>{message}</p>
+            <button onClick={handleCloseMessageDialog} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex mt-[30%]">
         <a href="https://github.com/divyanshMauryaaa/testgem" target="_blank">
           <Github className="hover:text-indigo-700" size={30} />
         </a>
 
         <p className="flex text-sm text-gray-500">
-          &nbsp;<Info size={16}/> This project is open-source, click on the icon to learn more
+          &nbsp;<Info size={16} /> This project is open-source, click on the icon to learn more
         </p>
       </div>
     </div>

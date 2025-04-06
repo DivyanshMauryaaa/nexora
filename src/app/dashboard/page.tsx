@@ -28,11 +28,12 @@ const Dashboard = () => {
     const [openTests, setOpenTests] = useState<Set<string>>(new Set());
     const [isLoading, setLoading] = useState(false);
     const [isEditDialogOpen, setDialogOpen] = useState(false);
-    const [selectedTest, setSelectedTest] = useState<any | null>(null);
+    const [selectedDoc, setSelectedDoc] = useState<any | null>(null);
     const [userInput, setUserInput] = useState("");
     const [aiResponse, setAiResponse] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [updatedTitle, setUpdatedTitle] = useState<string>("");
+    const [isNoteEditDialogOpen, setNoteEditDialogOpen] = useState(false);
 
     //Document Dialog
     const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
@@ -85,9 +86,9 @@ const Dashboard = () => {
         if (user) fetchNotes();
     }, [user]);
 
-    const openEditDialog = (test: any) => {
-        setSelectedTest(test);
-        setUpdatedTitle(test.title);
+    const openEditDialog = (document: any) => {
+        setSelectedDoc(document);
+        setUpdatedTitle(document.title);
         setUserInput("");  // Ensure AI input is cleared
         setAiResponse(null);  // Prevent AI from triggering
         setDialogOpen(true);
@@ -95,9 +96,24 @@ const Dashboard = () => {
 
     const closeDialog = () => {
         setDialogOpen(false);
-        setSelectedTest(null);
+        setSelectedDoc(null);
         setAiResponse(null);
     };
+
+    const openNoteEditDialog = (document: any) => {
+        setSelectedDoc(document);
+        setUpdatedTitle(document.title);
+        setUserInput("");  // Ensure AI input is cleared
+        setAiResponse(null);  // Prevent AI from triggering
+        setDialogOpen(true);
+    };
+
+    const closeNoteEditDialog = () => {
+        setDialogOpen(false);
+        setSelectedDoc(null);
+        setAiResponse(null);
+    };
+
 
     const handleEditSubmit = async () => {
         setIsProcessing(true);
@@ -110,8 +126,8 @@ const Dashboard = () => {
                     contents: [
                         {
                             role: "user", parts: [{
-                                text: `Respond formally and professionally. Always state searial number of each question (eg. Q1 -, Q2 - or ). No greetings or closing statements. 
-                            Edit this text based on the prompt:\n\nOriginal Text: "${selectedTest?.content}"\n\nUser Prompt: "${userInput}"`
+                                text: `Respond formally and professionally.For questions Always state searial number of each question (eg. Q1 -, Q2 - or ). And for notes, do as told in the prompt but always keep the key points intact, only add/modify where required No greetings or closing statements. 
+                            Edit this text based on the prompt:\n\nOriginal Text: "${selectedDoc?.content}"\n\nUser Prompt: "${userInput}"`
                             }]
                         }
                     ]
@@ -132,17 +148,17 @@ const Dashboard = () => {
     };
 
     const keepChanges = async (database?: string) => {
-        if (!selectedTest || !aiResponse) return;
+        if (!selectedDoc || !aiResponse) return;
 
         const updatedTests = tests.map((test) =>
-            test.id === selectedTest.id ? { ...test, content: aiResponse } : test
+            test.id === selectedDoc.id ? { ...test, content: aiResponse } : test
         );
         setTests(updatedTests);
 
         await supabase
             .from(database || "test_documents")
             .update({ content: aiResponse })
-            .eq("id", selectedTest.id);
+            .eq("id", selectedDoc.id);
 
         closeDialog();
     };
@@ -164,22 +180,22 @@ const Dashboard = () => {
             .eq("id", testId);
     };
 
-    const handleDeleteTest = async (testId?: string, updatedTitle?: string, deleteDatabase?: string) => {
-        if (!testId) {
-            console.error("Delete Error: testId is undefined");
+    const handleDeleteTest = async (documentID?: string, updatedTitle?: string, deleteDatabase?: string) => {
+        if (!documentID) {
+            console.error("Delete Error: documentID is undefined");
             return;
         }
 
         try {
             const { error } = await supabase
-                .from(deleteDatabase ? "test_documents" : "notes")
+                .from(deleteDatabase || "test_documents")
                 .delete()
-                .eq("id", testId);
+                .eq("id", documentID);
 
             if (error) {
                 console.error("Delete Error:", error);
             } else {
-                setTests((prevTests) => prevTests.filter((test) => test.id !== testId));
+                setTests((prevTests) => prevTests.filter((test) => test.id !== documentID));
             }
         } catch (error) {
             console.error("Request Failed:", error);
@@ -227,63 +243,67 @@ const Dashboard = () => {
                 <div>
                     <div className="flex flex-wrap gap-4">
 
-                        {tests.map((test) => {
-                            const isOpen = openTests.has(test.id);
-                            return (
-                                <div
-                                    key={test.id}
-                                    className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
-                                    ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                                >
-                                    <div className="flex justify-between items-center">
-                                        <p
-                                            className="font-semibold text-xl outline-none cursor-text"
-                                            contentEditable
-                                            suppressContentEditableWarning
-                                            onBlur={(e) => HandleeditTitle(test.id, e.target.innerText, "test_documents")}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") {
-                                                    e.preventDefault();
-                                                    e.currentTarget.blur(); // Save title on Enter
-                                                }
-                                            }}
+                        {tests.length === 0 ? (
+                            <p className="text-gray-500">No tests available.</p>)
+                            : (
+                                tests.map((test) => {
+                                    const isOpen = openTests.has(test.id);
+                                    return (
+                                        <div
+                                            key={test.id}
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
+                                            ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
                                         >
-                                            {test.title}
-                                        </p>
+                                            <div className="flex justify-between items-center">
+                                                <p
+                                                    className="font-semibold text-xl outline-none cursor-text"
+                                                    contentEditable
+                                                    suppressContentEditableWarning
+                                                    onBlur={(e) => HandleeditTitle(test.id, e.target.innerText, "test_documents")}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            e.currentTarget.blur(); // Save title on Enter
+                                                        }
+                                                    }}
+                                                >
+                                                    {test.title}
+                                                </p>
 
 
-                                        <div className="flex gap-3">
-                                            <p
-                                                className="hover:text-blue-800 cursor-pointer"
-                                                onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
-                                            >
-                                                <Sparkles size={20} />
-                                            </p>
-                                            <p
-                                                className="hover:text-red-700 cursor-pointer"
-                                                onClick={() => handleDeleteTest(test.id, "test_documents")}
-                                            >
-                                                <Trash size={20} />
-                                            </p>
-                                            <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
-                                                <Download size={20} />
-                                            </p>
+                                                <div className="flex gap-3">
+                                                    <p
+                                                        className="hover:text-blue-800 cursor-pointer"
+                                                        onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
+                                                    >
+                                                        <Sparkles size={20} />
+                                                    </p>
+                                                    <p
+                                                        className="hover:text-red-700 cursor-pointer"
+                                                        onClick={() => handleDeleteTest(test.id, "test_documents")}
+                                                    >
+                                                        <Trash size={20} />
+                                                    </p>
+                                                    <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
+                                                        <Download size={20} />
+                                                    </p>
 
 
+                                                </div>
+                                            </div>
+
+                                            <br />
+                                            <hr />
+                                            <br />
+                                            <div onClick={() => openDocumentDialog(test.title, test.content)}>
+                                                <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                                    <Markdown>{test.content}</Markdown>
+                                                </small>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <br />
-                                    <hr />
-                                    <br />
-                                    <div onClick={() => openDocumentDialog(test.title, test.content)}>
-                                        <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
-                                            <Markdown>{test.content}</Markdown>
-                                        </small>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                    );
+                                })
+                            )}
 
 
                     </div>
@@ -324,7 +344,7 @@ const Dashboard = () => {
                                         <div className="flex gap-3">
                                             <p
                                                 className="hover:text-indigo-800 cursor-pointer"
-                                                onClick={(e) => { e.stopPropagation(); openEditDialog(note); }}
+                                                onClick={(e) => { e.stopPropagation(); openNoteEditDialog(note); }}
                                             >
                                                 <Sparkles size={20} />
                                             </p>
@@ -363,7 +383,7 @@ const Dashboard = () => {
                 <div className="fixed inset-0 bg-transparent bg-opacity-50 flex justify-center items-center">
                     <div className={`bg-gray-800 text-white p-5 rounded-lg shadow-lg ${aiResponse ? "w-[90%] h-[90%]" : "w-[400px] max-h-[90vh]"} overflow-y-auto`}>
                         <h2 className="text-xl font-semibold mb-4">Edit with AI</h2>
-                        <p className="">{selectedTest?.title}</p>
+                        <p className="">{selectedDoc?.title}</p>
 
                         {aiResponse ? (
                             <>
@@ -375,7 +395,7 @@ const Dashboard = () => {
 
                                 <div className="flex justify-end gap-3 mt-4">
                                     <button className="px-4 py-2 bg-gray-300 rounded" onClick={closeDialog}>Deny Changes</button>
-                                    <button className="px-4 py-2 bg-indigo-600 text-white rounded" onClick={() => keepChanges()}>Keep Changes</button>
+                                    <button className="px-4 py-2 bg-indigo-600 text-white rounded" onClick={() => keepChanges("test_documents")}>Keep Changes</button>
                                 </div>
                             </>
                         ) : (
@@ -403,18 +423,62 @@ const Dashboard = () => {
                 </div>
             )}
 
+            {isNoteEditDialogOpen && (
+                <div className="fixed inset-0 bg-transparent bg-opacity-50 flex justify-center items-center">
+                    <div className={`bg-gray-800 text-white p-5 rounded-lg shadow-lg ${aiResponse ? "w-[90%] h-[90%]" : "w-[400px] max-h-[90vh]"} overflow-y-auto`}>
+                        <h2 className="text-xl font-semibold mb-4">Edit Note with AI</h2>
+                        <p className="">{selectedDoc?.title}</p>
+
+                        {aiResponse ? (
+                            <>
+                                <p className="text-sm">AI Suggested Changes:</p>
+
+                                <div className={`border p-3 rounded-md mt-2 ${aiResponse ? "max-h-[90%]" : "max-h-60"} overflow-y-auto`}>
+                                    <Markdown>{aiResponse}</Markdown>
+                                </div>
+
+                                <div className="flex justify-end gap-3 mt-4">
+                                    <button className="px-4 py-2 bg-gray-200 rounded" onClick={closeDialog}>Deny Changes</button>
+                                    <button className="px-4 py-2 bg-indigo-700 text-white rounded" onClick={() => keepChanges("notes")}>Keep Changes</button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <textarea
+                                    className="w-full p-2 border rounded-lg mt-3"
+                                    rows={4}
+                                    placeholder="Enter your instructions..."
+                                    value={userInput}
+                                    onChange={(e) => setUserInput(e.target.value)}
+                                />
+                                <div className="flex justify-end gap-3 mt-4">
+                                    <button className="px-4 py-2 rounded" onClick={closeDialog}>Cancel</button>
+                                    <button
+                                        className="px-4 py-2 bg-indigo-700 text-white rounded"
+                                        onClick={handleEditSubmit}
+                                        disabled={isProcessing}
+                                    >
+                                        {isProcessing ? "Processing..." : "Submit"}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {documentDialogOpen && (
                 <div className="fixed inset-0 bg-opacity-50 bg-gray-100 flex justify-center items-center">
                     <div className="bg-white p-5 rounded-lg shadow-lg w-[90%] max-h-[90vh] overflow-y-auto">
-                        <p className="cursor-pointer" onClick={() => setDocumentDialogOpen(false)}><CircleX /></p>
+                        <p className="cursor-pointer" onClick={() => setDocumentDialogOpen(false)}><CircleX /></p> {/* Close button */}
 
                         <br />
-                        <p className="text-4xl font-bold text-gray-700">{documentTitle}</p>
+                        <p className="text-4xl font-bold text-gray-700">{documentTitle}</p> {/* Dialog Title */}
                         <br />
                         <hr />
                         <br />
 
-                        <Markdown>{documentContent}</Markdown>
+                        <Markdown>{documentContent}</Markdown> {/* Dialog content */}
                         <br />
                     </div>
                 </div>
