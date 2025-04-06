@@ -23,8 +23,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TestGem",
-  description: "Test papers empowered by AI.... Click to learn more",
+  title: "MindForge",
+  description: "Documents, tasks and more, all in one place. Empowered by AI.",
 };
 
 export default function RootLayout({
@@ -44,7 +44,7 @@ export default function RootLayout({
             <SignedIn>
                 <Link href="/" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Create</Link>
                 <Link href="/dashboard" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Dashboard</Link>
-                {/* <Link href="/interactiveTest" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Interactive Tests</Link>  - Currently in development*/}
+                <Link href="/tasks" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Tasks</Link>
                 <UserButton />
             </SignedIn>
           </header>

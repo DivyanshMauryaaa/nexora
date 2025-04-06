@@ -180,7 +180,7 @@ const Dashboard = () => {
             .eq("id", testId);
     };
 
-    const handleDeleteTest = async (documentID?: string, updatedTitle?: string, deleteDatabase?: string) => {
+    const handleDeleteTest = async (documentID?: string, database?: string) => {
         if (!documentID) {
             console.error("Delete Error: documentID is undefined");
             return;
@@ -188,7 +188,7 @@ const Dashboard = () => {
 
         try {
             const { error } = await supabase
-                .from(deleteDatabase || "test_documents")
+                .from(database || "test_documents")
                 .delete()
                 .eq("id", documentID);
 
@@ -201,6 +201,7 @@ const Dashboard = () => {
             console.error("Request Failed:", error);
         }
     };
+    
 
     const handleMarkdownToDocx = async (markdown: string, fileName = "document.docx") => {
         try {
@@ -284,9 +285,9 @@ const Dashboard = () => {
                                                     >
                                                         <Trash size={20} />
                                                     </p>
-                                                    <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
+                                                    {/* <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(test.content, `${test.title}.docx`)}>
                                                         <Download size={20} />
-                                                    </p>
+                                                    </p> */}
 
 
                                                 </div>
@@ -349,14 +350,14 @@ const Dashboard = () => {
                                                 <Sparkles size={20} />
                                             </p>
                                             <p
-                                                className="hover:text-red-600 cursor-pointer"
+                                                className="hover:text-red-700 cursor-pointer"
                                                 onClick={() => handleDeleteTest(note.id, "notes")}
                                             >
                                                 <Trash size={20} />
                                             </p>
-                                            <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(note.content, `${note.title}.docx`)}>
+                                            {/* <p className="cursor-pointer" onClick={() => handleMarkdownToDocx(note.content, `${note.title}.docx`)}>
                                                 <Download size={20} />
-                                            </p>
+                                            </p> */}
 
 
                                         </div>

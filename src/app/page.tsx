@@ -169,7 +169,7 @@ export default function Home() {
 
       {/* Message Dialog to show the message to the user */}
       {messageDialog && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-50 bg-opacity-75">
           <div className="bg-slate-800 text-white p-6 rounded-lg shadow-lg w-[300px]">
             <h2 className="text-lg font-semibold mb-4">{dialogTitle}</h2>
             <p>{message}</p>
@@ -181,12 +181,12 @@ export default function Home() {
       )}
 
       <div className="flex mt-[30%]">
-        <a href="https://github.com/divyanshMauryaaa/testgem" target="_blank">
+        <a href="https://github.com/divyanshMauryaaa/" target="_blank">
           <Github className="hover:text-indigo-700" size={30} />
         </a>
 
         <p className="flex text-sm text-gray-500">
-          &nbsp;<Info size={16} /> This project is open-source, click on the icon to learn more
+          &nbsp;<Info size={16} /> Developer's profile
         </p>
       </div>
     </div>
