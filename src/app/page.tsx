@@ -103,8 +103,8 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <p className="text-[50px] font-[800] text-center text-gray-700">
-        Welcome back! <span className="bg-gradient-to-r text-transparent from-indigo-700 to-purple-700 bg-clip-text">{user?.firstName}</span>
+      <p className="text-[30px] font-[800] text-center text-gray-700">
+        How can I help you? <span className="bg-gradient-to-r text-transparent from-indigo-700 to-purple-700 bg-clip-text">{user?.firstName}</span>
       </p>
 
       <br />

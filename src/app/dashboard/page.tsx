@@ -118,8 +118,10 @@ const Dashboard = () => {
     const handleEditSubmit = async () => {
         setIsProcessing(true);
 
+        const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""; // Ensure you have your API key set in your environment variables
+
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -202,42 +204,10 @@ const Dashboard = () => {
         }
     };
 
-
-    const handleMarkdownToDocx = async (markdown: string, fileName = "document.docx") => {
-        try {
-            const turndownService = new TurndownService({ strongDelimiter: "**" });
-
-            // Use the GFM plugin for better formatting
-            turndownService.addRule("preserveLineBreaks", {
-                filter: ["br"],
-                replacement: () => "\n",
-            });
-
-            const htmlContent = turndownService.turndown(markdown);
-
-            // Split content into paragraphs (preserving line breaks)
-            const paragraphs = htmlContent.split("\n").map(line => new Paragraph({
-                children: [new TextRun(line)],
-            }));
-
-            const doc = new Document({
-                sections: [{ properties: {}, children: paragraphs }],
-            });
-
-            const blob = await Packer.toBlob(doc);
-            saveAs(blob, fileName);
-
-            console.log("DOCX file generated successfully!");
-        } catch (error) {
-            console.error("Error converting Markdown to DOCX:", error);
-        }
-    };
-
     return (
         <div className="p-3">
-            <p className="text-4xl text-center">Dashboard</p>
             <br />
-            <p className="font-bold text-4xl">Your Tests</p>
+            <p className="font-bold text-2xl">Your Tests</p>
             <br />
 
             {isLoading ? <p>Loading...</p> : (
@@ -312,7 +282,7 @@ const Dashboard = () => {
 
                     <br /><br />
 
-                    <p className="font-bold text-4xl">Your Notes</p>
+                    <p className="font-bold text-2xl">Your Notes</p>
                     <br />
 
                     <div className="flex flex-wrap gap-4">
@@ -326,8 +296,8 @@ const Dashboard = () => {
                                     return (
                                         <div
                                             key={note.id}
-                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
-                                        ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
+                                        ${isOpen ? '' : 'w-[400px] h-[200px]'} overflow-hidden`}
                                         >
                                             <div className="flex justify-between items-center">
                                                 <p
