@@ -182,7 +182,7 @@ const Dashboard = () => {
             .eq("id", testId);
     };
 
-    const handleDeleteTest = async (documentID?: string, database?: string) => {
+    const handleDeleteDocument = async (documentID?: string, database?: string) => {
         if (!documentID) {
             console.error("Delete Error: documentID is undefined");
             return;
@@ -198,6 +198,7 @@ const Dashboard = () => {
                 console.error("Delete Error:", error);
             } else {
                 setTests((prevTests) => prevTests.filter((test) => test.id !== documentID));
+                setNotes((prevNotes) => prevNotes.filter((note) => note.id !== documentID));
             }
         } catch (error) {
             console.error("Request Failed:", error);
@@ -252,7 +253,7 @@ const Dashboard = () => {
                                                     </p>
                                                     <p
                                                         className="hover:text-red-700 cursor-pointer"
-                                                        onClick={() => handleDeleteTest(test.id, "test_documents")}
+                                                        onClick={() => handleDeleteDocument(test.id, "test_documents")}
                                                     >
                                                         <Trash size={20} />
                                                     </p>
@@ -325,7 +326,7 @@ const Dashboard = () => {
                                                     </p>
                                                     <p
                                                         className="hover:text-red-700 cursor-pointer"
-                                                        onClick={() => handleDeleteTest(note.id, "notes")}
+                                                        onClick={() => handleDeleteDocument(note.id, "notes")}
                                                     >
                                                         <Trash size={20} />
                                                     </p>
