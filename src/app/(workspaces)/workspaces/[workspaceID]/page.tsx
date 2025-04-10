@@ -8,7 +8,7 @@ const supabase = createClient(
 
 type PageProps = {
   params: {
-    workspaceID: string;
+    workspaceId: string;
   };
 };
 
@@ -16,7 +16,7 @@ export default async function WorkspacePage({ params }: PageProps) {
   const { data, error } = await supabase
     .from('workspaces')
     .select('*')
-    .eq('id', params.workspaceID)
+    .eq('id', params.workspaceId)
     .single();
 
   return <WorkspaceClient workspace={data} error={error?.message} />;
