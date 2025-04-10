@@ -222,7 +222,7 @@ const Dashboard = () => {
                                     return (
                                         <div
                                             key={test.id}
-                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 hover:shadow-md hover:bg-gray-100 cursor-pointer
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
                                             ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
                                         >
                                             <div className="flex justify-between items-center">

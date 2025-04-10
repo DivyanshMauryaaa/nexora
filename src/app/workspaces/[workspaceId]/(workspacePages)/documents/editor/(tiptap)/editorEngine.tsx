@@ -7,7 +7,7 @@ import Typography from "@tiptap/extension-typography"
 import Heading from "@tiptap/extension-heading"
 import Toolbar from "./components/toolbar"
 
-export default function TiptapEditor() {
+const TiptapEditor = ({ documentValue }: { documentValue: any }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -21,7 +21,7 @@ export default function TiptapEditor() {
         },
       }),
     ],
-    content: "<p>Welcome to the jungle 🌴</p>",
+    content: documentValue || "<p>Start typing here...</p>",
   })
 
   return (
@@ -34,3 +34,5 @@ export default function TiptapEditor() {
     </div>
   )
 }
+
+export default TiptapEditor;

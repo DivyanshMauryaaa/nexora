@@ -106,8 +106,8 @@ const workSpaces = () => {
                     <div className="bg-white p-4 rounded-lg shadow-lg w-1/3">
                         <button onClick={() => setIsCreateSpaceDialogOpen(false)}><XIcon className="cursor-pointer" /></button>
 
-                        <h2 className="text-xl font-bold">Create a New Space</h2>
-
+                        <h2 className="text-xl font-bold mt-2">Create a New Space</h2>
+                        <br />
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -126,7 +126,7 @@ const workSpaces = () => {
                                     id="spaceTitle"
                                     value={createSpaceTitle}
                                     onChange={(e) => setCreateSpaceTitle(e.target.value)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow p-2 focus:border-blue-700 focus:outline-none"
                                     required
                                 />
                             </div>
@@ -138,7 +138,7 @@ const workSpaces = () => {
                                     id="spaceDescription"
                                     value={createSpaceDescription}
                                     onChange={(e) => setCreateSpaceDescription(e.target.value)}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                                    className="mt-1 max-h-[200] block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-700 focus:outline-none"
                                     rows={4}
                                     required
                                 />
