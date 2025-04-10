@@ -3,11 +3,8 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
+import { Sparkles, Trash, CircleX } from "lucide-react";
 import Markdown from "react-markdown";
-import { Sparkles, Trash, Expand, Shrink, Download, X, CircleX } from "lucide-react";
-import { saveAs } from "file-saver";
-import { Document, Packer, Paragraph, TextRun } from "docx";
-import TurndownService from "turndown";
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL || '',
@@ -22,6 +19,7 @@ interface Test {
 }
 
 const Dashboard = () => {
+    
     const { user } = useUser();
     const [tests, setTests] = useState<Test[]>([]);
     const [notes, setNotes] = useState<any[]>([]);
@@ -62,6 +60,7 @@ const Dashboard = () => {
 
         setLoading(false);
     };
+
 
     const fetchNotes = async () => {
         setLoading(true);
@@ -113,7 +112,6 @@ const Dashboard = () => {
         setSelectedDoc(null);
         setAiResponse(null);
     };
-
 
     const handleEditSubmit = async () => {
         setIsProcessing(true);

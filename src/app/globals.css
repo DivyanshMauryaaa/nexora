@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+[contenteditable]:focus {
+    outline: none;
+}

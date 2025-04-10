@@ -33,6 +33,14 @@ const Page = () => {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
 
+    //Task edit dialog
+    const [taskEditDialogOpen, setTaskEditDialogOpen] = useState(false);
+    const [taskEditTitle, setTaskEditTitle] = useState<string>("");
+    const [taskEditContent, setTaskEditContent] = useState<string>("");
+    const [taskEditId, setTaskEditId] = useState<string>("");
+    const [taskEditUserId, setTaskEditUserId] = useState<string>("");
+    const [taskEditPriority, setTaskEditPriority] = useState<string>("");
+
     useEffect(() => {
         if (user?.id) {
             fetchTasks();
@@ -178,9 +186,9 @@ const Page = () => {
                 }),
             }
         );
-        
+
         const jsonResponse = await generatedDescription.json();
-        const descriptionText = jsonResponse?.content?.[0]?.parts?.[0]?.text        || "Failed to generate description.";
+        const descriptionText = jsonResponse?.content?.[0]?.parts?.[0]?.text || "Failed to generate description.";
         setAddDescription(descriptionText); // Set the generated description to the state
     }
 

@@ -44,7 +44,7 @@ export default function RootLayout({
             <SignedIn>
                 <Link href="/" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Create</Link>
                 <Link href="/dashboard" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Dashboard</Link>
-                <Link href="/tasks" className="text-lg font-[600] hover:text-indigo-700 cursor-pointer">Tasks</Link>
+                <Link href="/workspaces" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Workspaces</Link>
                 <UserButton />
             </SignedIn>
           </header>
