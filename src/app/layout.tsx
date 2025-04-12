@@ -42,9 +42,9 @@ export default function RootLayout({
               <SignUpButton />
             </SignedOut>
             <SignedIn>
-                <Link href="/" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Create</Link>
-                <Link href="/dashboard" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Dashboard</Link>
+                <Link href="/" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Dashboard</Link>
                 <Link href="/workspaces" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">Workspaces</Link>
+                <Link href="/ai-corner" className="text-lg font-[600] hover:text-blue-700 cursor-pointer">AI Corner</Link>
                 <UserButton />
             </SignedIn>
           </header>

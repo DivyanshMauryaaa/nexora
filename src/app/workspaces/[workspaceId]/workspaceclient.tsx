@@ -28,7 +28,7 @@ export default function WorkspaceClient({ workspace, error }: Props) {
   const { user } = useUser();
   const [title, setTitle] = useState(workspace.title);
   const [description, setDescription] = useState(workspace.description);
-  const [currentPage, setCurrentPage] = useState<React.ReactNode>(<Tasks />);
+  const [currentPage, setCurrentPage] = useState<string | React.ReactNode>(<Tasks />);
 
   const handleUpdate = async (field: string, value: string) => {
     const { error } = await supabase
