@@ -90,7 +90,7 @@ const workSpaces = () => {
                         <div
                             onClick={() => router.push(`/workspaces/${space.id}`)}
                             key={space.id} 
-                            className="border border-gray-300 p-4 cursor-pointer w-[300px] h-[100px] max-h-[120px] overflow-y-hidden rounded-lg">
+                            className="border border-gray-300 p-4 hover:border-blue-700 transition-all duration-200 cursor-pointer w-[300px] h-[100px] max-h-[120px] overflow-y-hidden rounded-lg">
                             <h3 className="text-lg font-bold">{space.title}</h3>
                             <p className="text-sm text-gray-600">{space.description}</p>
                         </div>

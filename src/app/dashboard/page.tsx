@@ -235,35 +235,37 @@ const Dashboard = () => {
                         ) : (
                             workSpaces.map((space: any) => {
                                 return (
-                                    <Link href={`/workspaces/${space.id}`}>
-                                        <div
-                                            key={space.id}
-                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 w-[400px] h-[100px] hover:border-blue-700 cursor-pointer`}
-                                        >
-                                            <div>
-                                                <p
-                                                    className="font-semibold text-xl outline-none cursor-text"
-                                                    contentEditable
-                                                    suppressContentEditableWarning
-                                                    onBlur={(e) => HandleeditTitle(space.id, e.target.innerText, "workspaces")}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === "Enter") {
-                                                            e.preventDefault();
-                                                            e.currentTarget.blur();
-                                                        }
-                                                    }}
-                                                >
-                                                    {space.title}
-                                                </p>
+                                    <div>
+                                        <Link href={`/workspaces/${space.id}`}>
+                                            <div
+                                                key={space.id}
+                                                className={`p-2 border transition-all duration-200 rounded-lg border-gray-200 w-[400px] h-[100px] hover:border-blue-700 cursor-pointer`}
+                                            >
+                                                <div>
+                                                    <p
+                                                        className="font-semibold text-xl outline-none cursor-text"
+                                                        contentEditable
+                                                        suppressContentEditableWarning
+                                                        onBlur={(e) => HandleeditTitle(space.id, e.target.innerText, "workspaces")}
+                                                        onKeyDown={(e) => {
+                                                            if (e.key === "Enter") {
+                                                                e.preventDefault();
+                                                                e.currentTarget.blur();
+                                                            }
+                                                        }}
+                                                    >
+                                                        {space.title}
+                                                    </p>
 
-                                                <p className="text-gray-600">
-                                                    {space.description}
-                                                </p>
+                                                    <p className="text-gray-600">
+                                                        {space.description}
+                                                    </p>
 
 
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
+                                        </Link>
+                                    </div>
                                 );
                             })
                         )}
@@ -279,50 +281,52 @@ const Dashboard = () => {
                             tests.map((test) => {
                                 const isOpen = openTests.has(test.id);
                                 return (
-                                    <div
-                                        key={test.id}
-                                        className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
+                                    <div>
+                                        <div
+                                            key={test.id}
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
                                             ${isOpen ? 'w-full h-auto' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <p
-                                                className="font-semibold text-xl outline-none cursor-text"
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                onBlur={(e) => HandleeditTitle(test.id, e.target.innerText, "test_documents")}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        e.preventDefault();
-                                                        e.currentTarget.blur();
-                                                    }
-                                                }}
-                                            >
-                                                {test.title}
-                                            </p>
+                                        >
+                                            <div className="flex justify-between items-center">
+                                                <p
+                                                    className="font-semibold text-xl outline-none cursor-text"
+                                                    contentEditable
+                                                    suppressContentEditableWarning
+                                                    onBlur={(e) => HandleeditTitle(test.id, e.target.innerText, "test_documents")}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            e.currentTarget.blur();
+                                                        }
+                                                    }}
+                                                >
+                                                    {test.title}
+                                                </p>
 
-                                            <div className="flex gap-3">
-                                                <p
-                                                    className="hover:text-blue-800 cursor-pointer"
-                                                    onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
-                                                >
-                                                    <Sparkles size={20} />
-                                                </p>
-                                                <p
-                                                    className="hover:text-red-700 cursor-pointer"
-                                                    onClick={() => handleDeleteDocument(test.id, "test_documents")}
-                                                >
-                                                    <Trash size={20} />
-                                                </p>
+                                                <div className="flex gap-3">
+                                                    <p
+                                                        className="hover:text-blue-800 cursor-pointer"
+                                                        onClick={(e) => { e.stopPropagation(); openEditDialog(test); }}
+                                                    >
+                                                        <Sparkles size={20} />
+                                                    </p>
+                                                    <p
+                                                        className="hover:text-red-700 cursor-pointer"
+                                                        onClick={() => handleDeleteDocument(test.id, "test_documents")}
+                                                    >
+                                                        <Trash size={20} />
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <br />
-                                        <hr />
-                                        <br />
-                                        <div onClick={() => openDocumentDialog(test.title, test.content)}>
-                                            <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
-                                                <Markdown>{test.content}</Markdown>
-                                            </small>
+                                            <br />
+                                            <hr />
+                                            <br />
+                                            <div onClick={() => openDocumentDialog(test.title, test.content)}>
+                                                <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                                    <Markdown>{test.content}</Markdown>
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
                                 );
@@ -342,50 +346,52 @@ const Dashboard = () => {
                             notes.map((note) => {
                                 const isOpen = openTests.has(note.id);
                                 return (
-                                    <div
-                                        key={note.id}
-                                        className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
+                                    <div>
+                                        <div
+                                            key={note.id}
+                                            className={`p-2 border transition-all duration-200 rounded-lg border-gray-200  hover:border-blue-700 cursor-pointer
                                             ${isOpen ? '' : 'w-[400px] h-[200px]'} overflow-hidden`}
-                                    >
-                                        <div className="flex justify-between items-center">
-                                            <p
-                                                className="font-semibold text-xl outline-none cursor-text"
-                                                contentEditable
-                                                suppressContentEditableWarning
-                                                onBlur={(e) => HandleeditTitle(note.id, e.target.innerText, "notes")}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        e.preventDefault();
-                                                        e.currentTarget.blur();
-                                                    }
-                                                }}
-                                            >
-                                                {note.title}
-                                            </p>
+                                        >
+                                            <div className="flex justify-between items-center">
+                                                <p
+                                                    className="font-semibold text-xl outline-none cursor-text"
+                                                    contentEditable
+                                                    suppressContentEditableWarning
+                                                    onBlur={(e) => HandleeditTitle(note.id, e.target.innerText, "notes")}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            e.currentTarget.blur();
+                                                        }
+                                                    }}
+                                                >
+                                                    {note.title}
+                                                </p>
 
-                                            <div className="flex gap-3">
-                                                <p
-                                                    className="hover:text-indigo-800 cursor-pointer"
-                                                    onClick={(e) => { e.stopPropagation(); openNoteEditDialog(note); }}
-                                                >
-                                                    <Sparkles size={20} />
-                                                </p>
-                                                <p
-                                                    className="hover:text-red-700 cursor-pointer"
-                                                    onClick={() => handleDeleteDocument(note.id, "notes")}
-                                                >
-                                                    <Trash size={20} />
-                                                </p>
+                                                <div className="flex gap-3">
+                                                    <p
+                                                        className="hover:text-indigo-800 cursor-pointer"
+                                                        onClick={(e) => { e.stopPropagation(); openNoteEditDialog(note); }}
+                                                    >
+                                                        <Sparkles size={20} />
+                                                    </p>
+                                                    <p
+                                                        className="hover:text-red-700 cursor-pointer"
+                                                        onClick={() => handleDeleteDocument(note.id, "notes")}
+                                                    >
+                                                        <Trash size={20} />
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <br />
-                                        <hr />
-                                        <br />
-                                        <div onClick={() => openDocumentDialog(note.title, note.content)}>
-                                            <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
-                                                <Markdown>{note.content}</Markdown>
-                                            </small>
+                                            <br />
+                                            <hr />
+                                            <br />
+                                            <div onClick={() => openDocumentDialog(note.title, note.content)}>
+                                                <small className={`${isOpen ? 'text-lg' : 'text-sm'}`}>
+                                                    <Markdown>{note.content}</Markdown>
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
                                 );

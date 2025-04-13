@@ -13,6 +13,8 @@ import Photos from "./(workspacePages)/photos/photos";
 import Tasks from "./(workspacePages)/tasks/tasks";
 import Documents from "./(workspacePages)/documents/document";
 import Schedules from "./(workspacePages)/schedules/schedules";
+import Reminders from "./(workspacePages)/reminders/reminders";
+import Emails from "./(workspacePages)/emails/emails";
 
 type Props = {
   workspace: any;
@@ -127,6 +129,16 @@ export default function WorkspaceClient({ workspace, error }: Props) {
                 onClick={() => setCurrentPage(<Photos />)}
                 className="w-[100%] text-center p-3 cursor-pointer rounded-lg text-lg hover:bg-blue-800 hover:text-white transition-ease-in duration-100">
                 Photos
+              </div>
+              <div 
+                onClick={() => setCurrentPage(<Reminders />)}
+                className="w-[100%] text-center p-3 cursor-pointer rounded-lg text-lg hover:bg-blue-800 hover:text-white transition-ease-in duration-100">
+                Reminders
+              </div>
+              <div 
+                onClick={() => setCurrentPage(<Emails />)}
+                className="w-[100%] text-center p-3 cursor-pointer rounded-lg text-lg hover:bg-blue-800 hover:text-white transition-ease-in duration-100">
+                Emails
               </div>
               
             </div>

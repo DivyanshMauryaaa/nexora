@@ -1,10 +1,6 @@
-'use client'
-
-import Dashboard from "./dashboard/page";
-import { useUser } from "@clerk/nextjs";
+// app/page.tsx
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  const { user } = useUser();
-
-  return <Dashboard key={user?.id} />
+  redirect("/dashboard");
 }
