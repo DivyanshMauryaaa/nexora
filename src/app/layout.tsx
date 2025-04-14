@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MindForge",
+  title: "Nexora",
   description: "Documents, tasks and more, all in one place. Empowered by AI.",
 };
 
