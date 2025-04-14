@@ -1,6 +1,6 @@
-<h1>Testgem</h1>
+<h1>Nexora</h1>
 <p>
-TestGem is an AI-powered web application that allows users to create customized test papers effortlessly. Leveraging artificial intelligence, it generates relevant questions based on user inputs, streamlining the assessment creation process.&#8203;
+Nexora is a produtvitiy app that let's the user stay focused and produtive throughout the time.&#8203;
 </p>
 
 <h2>Usage Process</h2>
