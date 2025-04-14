@@ -7,7 +7,7 @@ Nexora is a produtvitiy app that let's the user stay focused and produtive throu
 <ul>
   <li>Clone the repo 
     <br />
-    <code>git clone https://github.com/divyanshMauryaaa/testgem</code>
+    <code>git clone https://github.com/divyanshMauryaaa/nexora</code>
   </li>
   <li>Create .env file and load it with the structure given below. make sure to put "your" values</li>
   <li>run <code>npm install</code> to install all the depedencies</li>
