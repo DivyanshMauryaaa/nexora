@@ -1,3 +1,14 @@
+/*
+
+    Author - DivyanshMauryaaa (Github)
+    Project - Nexora
+    Created by - ByteForge inc,
+    LISCENCE - Nexora license @2025
+
+    /app/middleware.ts
+    This file is designed to protect pages
+*/
+
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
 const isPublicRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)',])
