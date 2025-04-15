@@ -2,7 +2,7 @@
     Author - DivyanshMauryaaa (Github)
     Project - Nexora
     Created by - ByteForge inc,
-    LISCENCE - AppCache GNU v3.0
+    LISCENCE - Copyright © 2025 ByteForge Inc.
 
     Paste this in supabase's sql editor of your project
     for the generation of the database for the app 
