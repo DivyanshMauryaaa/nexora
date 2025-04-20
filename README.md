@@ -1,5 +1,5 @@
 <h1>Nexora</h1>
-<h2>Please note that this project is discontinued since 20/04/2025, A New App for the same purpose is for mobile, <a href="https://github.com/divyanshMauryaaa/sway"><b>Sway</b>, but if you are using this project's code for your own purpose (except for re-uploading the work commercialy). You have been granted the permission.</a></h2>
+<h2>Please note that this project is discontinued since 20/04/2025, A New App for the same purpose is for mobile, <a href="https://github.com/divyanshMauryaaa/sway"><b>Sway (click for repo)</b></a><, but if you are using this project's code for your own purpose (except for re-uploading the work commercialy). You have been granted the permission./h2>
 <p>
 Nexora is a produtvitiy app that let's the user stay focused and produtive throughout the time.&#8203;
 </p>
